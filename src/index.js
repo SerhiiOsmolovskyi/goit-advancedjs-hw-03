@@ -1,4 +1,3 @@
-// index.js
 import { fetchBreeds, fetchCatByBreed } from "./cat-api";
 
 const breedSelect = document.querySelector(".breed-select");
@@ -39,6 +38,7 @@ const showCatInfo = async (breedId) => {
     catInfo.innerHTML = catInfoHTML;
 
     setCatInfoStyles();
+    hideError();
   } catch (error) {
     showError();
   } finally {
@@ -51,7 +51,7 @@ const setCatInfoStyles = () => {
   const catImage = catInfoContainer.querySelector(".cat-image");
   const catText = catInfoContainer.querySelector(".cat-text");
 
-  breedSelect.style.marginBottom = "10px"
+  breedSelect.style.marginBottom = "10px";
   catInfoContainer.style.display = "flex";
   catInfoContainer.style.flexWrap = "wrap";
 
@@ -63,25 +63,33 @@ const setCatInfoStyles = () => {
 
 const showLoader = () => {
   loader.style.display = "block";
+  breedSelect.style.display = "none";
+  catInfo.style.display = "none";
+  hideError();
 };
 
 const hideLoader = () => {
   loader.style.display = "none";
+  breedSelect.style.display = "block";
+  catInfo.style.display = "block";
 };
 
 const showError = () => {
   error.style.display = "block";
+  breedSelect.style.display = "none";
+  catInfo.style.display = "none";
+  catInfo.innerHTML = "";
 };
 
 const hideError = () => {
   error.style.display = "none";
 };
 
-breedSelect.addEventListener("change", (event) => {
+breedSelect.addEventListener("change", async (event) => {
   const selectedBreedId = event.target.value;
   showLoader();
   hideError();
-  showCatInfo(selectedBreedId);
+  await showCatInfo(selectedBreedId);
 });
 
 document.addEventListener("DOMContentLoaded", () => {
